@@ -29,8 +29,6 @@ defmodule Mix.Tasks.Test.Astesting do
             working_dir = "/tmp/astesting"
             System.cmd("rm", ["-rf", working_dir], into: IO.stream())
             System.cmd("cp", ["-r", ".", working_dir], into: IO.stream())
-            System.cmd("rm", ["-rf", "_build", "deps"], cd: working_dir, into: IO.stream)
-            System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "deps.get"], cd: working_dir, into: IO.stream)
             System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "test"] ++ args, cd: working_dir, into: IO.stream)
             :ok
 

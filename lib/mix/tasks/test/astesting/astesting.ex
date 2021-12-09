@@ -44,11 +44,7 @@ defmodule Mix.Tasks.Test.Astesting do
             :ok
 
           _ ->
-            astesting =
-              case Mix.Project.apps_paths() do
-                nil -> Mix.Project.app_path()
-                paths -> Map.get(paths, :astesting, Mix.Project.app_path())
-              end
+            astesting = "#{Mix.Project.app_path() |> Path.dirname()}/astesting"
 
             case File.read("#{astesting}/priv/Dockerfile.template") do
               {:error, :enoent} ->

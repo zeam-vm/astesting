@@ -35,6 +35,7 @@ defmodule Mix.Tasks.Test.Astesting do
           {_, 1} -> :ok
 
           _ ->
+            IO.puts(Mix.Project.app_path())
             case File.read("#{Mix.Project.app_path()}/priv/Dockerfile.template") do
               {:error, :enoent} -> IO.puts("Dockerfile.template is lost.")
               {:error, reason} -> IO.puts(:file.format_error(reason))

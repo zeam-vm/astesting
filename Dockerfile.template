@@ -1,0 +1,6 @@
+FROM elixir:@version
+
+# describe setting here
+RUN mix local.hex --force && \
+    mix local.rebar --force
+

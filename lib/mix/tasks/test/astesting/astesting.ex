@@ -26,10 +26,13 @@ defmodule Mix.Tasks.Test.Astesting do
           {_, 0} ->
             IO.puts("testing on x86_64")
 
-            {_result, 0} =
-              System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "test"] ++ args,
-                into: IO.stream()
-              )
+            working_dir = "/tmp/astesting"
+            System.cmd("rm", ["-rf", working_dir], into: IO.stream())
+            System.cmd("cp", ["-r", ".", working_dir], into: IO.stream())
+            System.cmd("rm", ["-rf", "_build", "deps"], cd: working_dir, into: IO.stream)
+            System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "deps.get"], cd: working_dir, into: IO.stream)
+            System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "test"] ++ args, cd: working_dir, into: IO.stream)
+            :ok
 
           _ ->
             :ok
@@ -59,8 +62,7 @@ defmodule Mix.Tasks.Test.Astesting do
                 IO.puts(:file.format_error(reason))
 
               {:ok, binary} ->
-                binary =
-                  String.replace(binary, "@version", "#{System.version()}", global: false)
+                binary = String.replace(binary, "@version", "#{System.version()}", global: false)
 
                 dockerfile = "#{astesting}/priv/Dockerfile"
 

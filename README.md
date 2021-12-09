@@ -10,12 +10,12 @@ In order to use `Astesting`, you will need Elixir installed. Then create an Elix
 $ mix new my_app
 ```
 
-Then you can add `Astesting` as dependency in your mix.exs. At the moment you will have to use a Git dependency while we work on our first release:
+Then you can add `Astesting` as dependency in your `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:astesting, "~> 0.1.0-dev", github: "zeam-vm/astesting", branch: "main", runtime: false}
+    {:astesting, "~> 0.1.0", runtime: false}
   ]
 end
 ```

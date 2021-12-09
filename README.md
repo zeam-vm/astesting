@@ -15,7 +15,7 @@ Then you can add `Astesting` as dependency in your `mix.exs`:
 ```elixir
 def deps do
   [
-    {:astesting, "~> 0.1.0", runtime: false}
+    {:astesting, "~> 0.1", runtime: false}
   ]
 end
 ```

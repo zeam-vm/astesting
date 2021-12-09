@@ -72,7 +72,7 @@ defmodule Mix.Tasks.Test.Astesting do
                         "-c",
                         """
                         docker build -t astesting -f #{dockerfile} . &&
-                        docker run --name astesting --rm -v #{File.cwd!()}:/work_tmp -w /work astesting ash -c "cp -r /work_tmp/* . && mix test #{args}" &&
+                        docker run --name astesting --rm -v #{File.cwd!()}:/work_tmp -w /work astesting ash -c "cp -r /work_tmp/* . && rm -rf _build deps && mix deps.get && mix test #{args}" &&
                         docker rmi astesting
                         """
                       ],

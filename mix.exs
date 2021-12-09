@@ -11,7 +11,9 @@ defmodule Astesting.MixProject do
       docs: [
         api_reference: false,
         main: "Mix.Tasks.Test.Astesting"
-      ]
+      ],
+      package: package(),
+      description: description()
     ]
   end
 
@@ -27,5 +29,30 @@ defmodule Astesting.MixProject do
     [
       {:ex_doc, "~> 0.26", only: :dev, runtime: false}
     ]
+  end
+
+  defp package do
+    [
+      name: "astesting",
+      maintainers: [
+        "Susumu Yamazaki"
+      ],
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/zeam-vm/astesting"},
+      files: [
+        # These are the default files
+        "lib",
+        "LICENSE.txt",
+        "mix.exs",
+        "README.md"
+      ]
+    ]
+  end
+
+  defp description() do
+    """
+    Testing x86_64 macOS and aarch64 Linux by Apple Silicon Mac with Rosetta 2 and Docker Desktop for Mac,
+    or x86_64 macOS and Linux by Intel x86_64 Mac and Docker Desktop for Mac.
+    """
   end
 end

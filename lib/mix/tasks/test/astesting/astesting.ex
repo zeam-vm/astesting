@@ -11,40 +11,65 @@ defmodule Mix.Tasks.Test.Astesting do
 
   def call_test_by_x86_64(args) do
     case System.find_executable("pkgutil") do
-      nil -> :ok
+      nil ->
+        :ok
 
       _ ->
         case System.cmd("pkgutil", ["--files", "com.apple.pkg.RosettaUpdateAuto"]) do
-          {"", 0} -> :ok
+          {"", 0} ->
+            :ok
 
           {_, 0} ->
             IO.puts("testing on x86_64")
-            {_result, 0} = System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "test"] ++ args, into: IO.stream)
 
-          _ -> :ok
+            {_result, 0} =
+              System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "test"] ++ args,
+                into: IO.stream()
+              )
+
+          _ ->
+            :ok
         end
     end
   end
 
   def call_test_by_docker(args) do
     case System.find_executable("docker") do
-      nil -> :ok
+      nil ->
+        :ok
 
       _ ->
         case System.cmd("docker", ["ps"], stderr_to_stdout: true) do
-          {_, 1} -> :ok
+          {_, 1} ->
+            :ok
 
           _ ->
-            case File.read("#{Map.get(Mix.Project.apps_paths(), :astesting)}/priv/Dockerfile.template") do
-              {:error, :enoent} -> IO.puts("Dockerfile.template is lost.")
-              {:error, reason} -> IO.puts(:file.format_error(reason))
+            astesting =
+              case Mix.Project.apps_paths() do
+                nil -> Mix.Project.app_path()
+                paths -> Map.get(paths, :astesting, Mix.Project.app_path())
+              end
+
+            case File.read("#{astesting}/priv/Dockerfile.template") do
+              {:error, :enoent} ->
+                IO.puts("Dockerfile.template is lost.")
+
+              {:error, reason} ->
+                IO.puts(:file.format_error(reason))
+
               {:ok, binary} ->
-                binary = String.replace(binary, "@version", "#{System.version()}-alpine", global: false)
-                dockerfile = "#{Map.get(Mix.Project.apps_paths(), :astesting)}/priv/Dockerfile"
+                binary =
+                  String.replace(binary, "@version", "#{System.version()}-alpine", global: false)
+
+                dockerfile = "#{astesting}/priv/Dockerfile"
+
                 case File.write(dockerfile, binary) do
-                  {:error, reason} -> IO.puts(:file.format_error(reason))
+                  {:error, reason} ->
+                    IO.puts(:file.format_error(reason))
+
                   :ok ->
                     IO.puts("testing on Docker")
+
                     System.cmd(
                       "bash",
                       [
@@ -57,6 +82,7 @@ defmodule Mix.Tasks.Test.Astesting do
                       ],
                       into: IO.stream()
                     )
+
                     :ok
                 end
             end
@@ -74,7 +100,9 @@ defmodule Mix.Tasks.Test.Astesting do
   @impl true
   def run(args) do
     case System.find_executable("mix") do
-      nil -> Mix.raise("Not found mix")
+      nil ->
+        Mix.raise("Not found mix")
+
       _ ->
         {_result, 0} = System.cmd("mix", ["test"] ++ args, into: IO.stream())
 
@@ -92,7 +120,8 @@ defmodule Mix.Tasks.Test.Astesting do
                 :ok
             end
 
-            _ -> :ok
+          _ ->
+            :ok
         end
     end
   end

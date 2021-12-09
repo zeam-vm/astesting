@@ -42,7 +42,7 @@ defmodule Astesting.MixProject do
       files: [
         # These are the default files
         "lib",
-        "LICENSE.txt",
+        "LICENSE",
         "mix.exs",
         "README.md"
       ]

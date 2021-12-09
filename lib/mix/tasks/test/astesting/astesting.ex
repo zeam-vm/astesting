@@ -5,10 +5,14 @@ defmodule Mix.Tasks.Test.Astesting do
   `mix test.astesting`: Runs the tests for a project with Rossetta 2 and Docker.
 
   Similar to `mix test`
-  but the tests run on x86_64 when on Apple Silicon and Rosetta 2 is installed,
-  and run on Docker on aarch64 and x86_64 when Docker is installed.
+  but the tests run on multiple environments, as follows:
+
+  * When runing on Mac with Apple Silicon, run on x86_64 macOS when Rosetta 2 is installed,
+  and run on aarch64 Linux when Docker is installed and launched.
+  * When runnint on Mac with Intel CPU, run on x86_64 Linux when Docker is installed and launched.
   """
 
+  @doc false
   def call_test_by_x86_64(args) do
     case System.find_executable("pkgutil") do
       nil ->
@@ -33,6 +37,7 @@ defmodule Mix.Tasks.Test.Astesting do
     end
   end
 
+  @doc false
   def call_test_by_docker(args) do
     case System.find_executable("docker") do
       nil ->
@@ -86,6 +91,7 @@ defmodule Mix.Tasks.Test.Astesting do
     end
   end
 
+  @doc false
   def arch_name() do
     :erlang.system_info(:system_architecture)
     |> List.to_string()

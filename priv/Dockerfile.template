@@ -2,7 +2,7 @@ FROM elixir:@version-alpine
 
 # describe setting here
 RUN apk update && \
-    apk install alpine-sdk \
+    apk install alpine-sdk && \
     mix local.hex --force && \
     mix local.rebar --force
 

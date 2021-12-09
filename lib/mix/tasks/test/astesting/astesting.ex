@@ -55,7 +55,7 @@ defmodule Mix.Tasks.Test.Astesting do
 
               {:ok, binary} ->
                 binary =
-                  String.replace(binary, "@version", "#{System.version()}-alpine", global: false)
+                  String.replace(binary, "@version", "#{System.version()}", global: false)
 
                 dockerfile = "#{astesting}/priv/Dockerfile"
 

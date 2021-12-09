@@ -1,6 +1,8 @@
-FROM elixir:@version
+FROM elixir:@version-alpine
 
 # describe setting here
-RUN mix local.hex --force && \
+RUN apk update && \
+    apk install alpine-sdk \
+    mix local.hex --force && \
     mix local.rebar --force
 

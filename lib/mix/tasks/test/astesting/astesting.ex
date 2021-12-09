@@ -35,12 +35,12 @@ defmodule Mix.Tasks.Test.Astesting do
           {_, 1} -> :ok
 
           _ ->
-            case File.read("Dockerfile.template") do
+            case File.read("#{Mix.Project.app_path()}/priv/Dockerfile.template") do
               {:error, :enoent} -> IO.puts("Dockerfile.template is lost.")
               {:error, reason} -> IO.puts(:file.format_error(reason))
               {:ok, binary} ->
                 binary = String.replace(binary, "@version", "#{System.version()}-alpine", global: false)
-                dockerfile = "#{Mix.Project.app_path()}/Dockerfile"
+                dockerfile = "#{Mix.Project.app_path()}/priv/Dockerfile"
                 case File.write(dockerfile, binary) do
                   {:error, reason} -> IO.puts(:file.format_error(reason))
                   :ok ->

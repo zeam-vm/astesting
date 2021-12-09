@@ -15,7 +15,7 @@ Then you can add `Astesting` as dependency in your mix.exs. At the moment you wi
 ```elixir
 def deps do
   [
-    {:astesting, "~> 0.1.0-dev", github: "zeam-vm/astesting", branch: "main", only: :test, runtime: false}
+    {:astesting, "~> 0.1.0-dev", github: "zeam-vm/astesting", branch: "main", runtime: false}
   ]
 end
 ```

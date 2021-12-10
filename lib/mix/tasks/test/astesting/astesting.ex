@@ -25,11 +25,13 @@ defmodule Mix.Tasks.Test.Astesting do
 
           {_, 0} ->
             IO.puts("testing on x86_64")
-
-            working_dir = "/tmp/astesting"
+            << i1 :: unsigned-integer-32, i2 :: unsigned-integer-32, i3 :: unsigned-integer-32>> = :crypto.strong_rand_bytes(12)
+            :rand.seed(:exsplus, {i1, i2, i3})
+            working_dir = "/tmp/astesting#{:rand.uniform(10000)}"
             System.cmd("rm", ["-rf", working_dir], into: IO.stream())
             System.cmd("cp", ["-r", ".", working_dir], into: IO.stream())
             System.cmd("env", ["/usr/bin/arch", "-x86_64", "mix", "test"] ++ args, cd: working_dir, into: IO.stream)
+            System.cmd("rm", ["-rf", working_dir], into: IO.stream())
             :ok
 
           _ ->

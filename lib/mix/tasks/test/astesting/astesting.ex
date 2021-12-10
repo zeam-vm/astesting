@@ -25,8 +25,7 @@ defmodule Mix.Tasks.Test.Astesting do
 
           {_, 0} ->
             IO.puts("testing on x86_64")
-            << i1 :: unsigned-integer-32, i2 :: unsigned-integer-32, i3 :: unsigned-integer-32>> = :crypto.strong_rand_bytes(12)
-            :rand.seed(:exsplus, {i1, i2, i3})
+            :crypto.rand_seed()
             working_dir = "/tmp/astesting#{:rand.uniform(10000)}"
             System.cmd("rm", ["-rf", working_dir], into: IO.stream())
             System.cmd("cp", ["-r", ".", working_dir], into: IO.stream())
@@ -52,6 +51,8 @@ defmodule Mix.Tasks.Test.Astesting do
             :ok
 
           _ ->
+            :crypto.rand_seed()
+
             astesting = "#{Mix.Project.app_path() |> Path.dirname()}/astesting"
 
             case File.read("#{astesting}/priv/Dockerfile.template") do
@@ -64,7 +65,7 @@ defmodule Mix.Tasks.Test.Astesting do
               {:ok, binary} ->
                 binary = String.replace(binary, "@version", "#{System.version()}", global: false)
 
-                dockerfile = "#{astesting}/priv/Dockerfile"
+                dockerfile = "#{astesting}/priv/Dockerfile#{:rand.uniform(1000)}"
 
                 case File.write(dockerfile, binary) do
                   {:error, reason} ->
@@ -73,14 +74,16 @@ defmodule Mix.Tasks.Test.Astesting do
                   :ok ->
                     IO.puts("testing on Docker")
 
+                    name = "astesting#{:rand.uniform(1000)}"
+
                     System.cmd(
                       "bash",
                       [
                         "-c",
                         """
-                        docker build -t astesting -f #{dockerfile} . &&
-                        docker run --name astesting --rm -v #{File.cwd!()}:/work_tmp -w /work astesting ash -c "cp -r /work_tmp/* . && rm -rf _build deps && mix deps.get && mix test #{args}" &&
-                        docker rmi astesting
+                        docker build -t #{name} -f #{dockerfile} . &&
+                        docker run --name #{name} --rm -v #{File.cwd!()}:/work_tmp -w /work #{name} ash -c "cp -r /work_tmp/* . && rm -rf _build deps && mix deps.get && mix test #{args}" &&
+                        docker rmi #{name}
                         """
                       ],
                       into: IO.stream()
